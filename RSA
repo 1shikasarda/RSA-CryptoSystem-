@@ -1,0 +1,59 @@
+import java.util.Scanner;
+public class Main {
+ public static int phi(int n) {
+ int result = n;
+ int i;
+ for (i = 2; i <= Math.sqrt(n); i++) {
+ if (n % i == 0) {
+ while (n % i == 0) {
+ n /= i;
+ }
+ result -= result / i;
+ }
+ }
+ if (n > 1) {
+ result -= result / n;
+ }
+ return result;
+ }
+ public static int fastExponentiation(int base, int exponent, int modulus) {
+ int result = 1;
+ while (exponent > 0) {
+ if (exponent % 2 == 1) {
+ result = (result * base) % modulus;
+ }
+ base = (base * base) % modulus;
+ exponent /= 2;
+ }
+ return result;
+ }
+ public static int rsaEncryption(int plaintext, int publicExponent, int modulus) {
+ return fastExponentiation(plaintext, publicExponent, modulus);
+ }
+ public static int rsaDecryption(int ciphertext, int privateExponent, int modulus) {
+ return fastExponentiation(ciphertext, privateExponent, modulus);
+ }
+ public static void main(String[] args) {
+ Scanner scanner = new Scanner(System.in);
+ int p, q, n, phi_n, e, d;
+ int plaintext, ciphertext, decryptedText;
+ System.out.print("Values of p and q:");
+ p = scanner.nextInt();
+ q = scanner.nextInt();
+ n = p * q;
+ phi_n = phi(n);
+ System.out.print("Value of e : ");
+ e = scanner.nextInt();
+ d = 1;
+ while ((d * e) % phi_n != 1) {
+ d++;
+ }
+ System.out.println("Value of D:" + d);
+ System.out.print("Enter the plaintext: ");
+ plaintext = scanner.nextInt();
+ ciphertext = rsaEncryption(plaintext, e, n);
+ System.out.println("Ciphertext: " + ciphertext);
+ decryptedText = rsaDecryption(ciphertext, d, n);
+ System.out.println("Decrypted Text: " + decryptedText);
+ }
+}
